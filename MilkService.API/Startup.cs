@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using MilkService.API.Controllers.Config;
 using MilkService.API.Domain.Repositories;
 using MilkService.API.Domain.Services;
+using MilkService.API.Extensions;
 using MilkService.API.Persistence.Contexts;
 using MilkService.API.Persistence.Repositories;
 using MilkService.API.Services;
@@ -35,7 +36,7 @@ namespace MilkService.API
                 // Adds a custom error response factory when ModelState is invalid
                 options.InvalidModelStateResponseFactory = InvalidModelStateResponseFactory.ProduceErrorResponse;
             });
-
+            services.AddCustomApiVersioning();
             services.AddDbContext<MilkServiceContext>(options =>
             {
                 options.UseMySql(Configuration.GetConnectionString("default"), x => x.ServerVersion("8.0.19-mysql"));
