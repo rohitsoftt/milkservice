@@ -6,8 +6,10 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MilkService.API.Domain.Models;
+using MilkService.API.Domain.Models.Queries.Response.User;
 using MilkService.API.Domain.Services;
 using MilkService.API.Domain.Services.Communication.Response;
+using MilkService.API.Domain.Models.DBModels.UserModels;
 using MilkService.API.Resources;
 using MilkService.API.Resources.UserResource;
 
@@ -44,6 +46,25 @@ namespace MilkService.API.Controllers
                 return Ok(result);
             }
             catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new FailureResponse("Internal Server Error"));
+            }
+        }
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> LoginAsync([FromBody] LoginUserResource loginUserResource)
+        {
+            try
+            {
+                var result = await _userService.LoginAsync(loginUserResource);
+                if (!result.Success)
+                {
+                    return BadRequest(new FailureResponse(result.Message));
+                }
+                var userDeails = result.Resource;
+                return Ok(new CResponse<UserLoginDetails>(result.Success, userDeails));
+            }
+            catch(Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new FailureResponse("Internal Server Error"));
             }

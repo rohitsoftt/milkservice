@@ -13,6 +13,7 @@ using MilkService.API.Extensions;
 using MilkService.API.Persistence.Contexts;
 using MilkService.API.Persistence.Repositories;
 using MilkService.API.Services;
+using Newtonsoft.Json;
 
 namespace MilkService.API
 {
@@ -29,7 +30,6 @@ namespace MilkService.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMemoryCache();
-            services.AddControllers();
             services.AddControllers().AddNewtonsoftJson();
             services.AddControllers().ConfigureApiBehaviorOptions(options =>
             {
@@ -45,6 +45,7 @@ namespace MilkService.API
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserService, UserService>();
             services.AddAutoMapper(typeof(Startup));
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,3 +72,21 @@ namespace MilkService.API
         }
     }
 }
+
+
+
+//services.AddControllers().AddNewtonsoftJson(options =>
+//{
+//    //options.SerializerSettings.NullValueHandling = NullValueHandling.Include;
+//    //options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+//    options.SerializerSettings.NullValueHandling = NullValueHandling.Include;
+//});
+//    services.AddMvc()
+//.AddJsonOptions(options => { options.JsonSerializerOptions.IgnoreNullValues = false; });
+//services.AddMvc().AddNewtonsoftJson(options =>
+//{
+//    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+//    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+//    options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
+//});
+//services.AddMvc(option => option.EnableEndpointRouting = false).AddNewtonsoftJson();

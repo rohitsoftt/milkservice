@@ -2,11 +2,16 @@
 using MilkService.API.Domain.Models;
 using MilkService.API.Domain.Repositories;
 using MilkService.API.Domain.Services;
+using MilkService.API.Domain.Services.Communication;
 using MilkService.API.Domain.Services.Communication.Response;
 using MilkService.API.Persistence.Contexts;
+using MilkService.API.Resources.UserResource;
+using MilkService.API.Domain.Models.DBModels.UserModels;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using MilkService.API.Domain.Models.Queries.Response.User;
 
 namespace MilkService.API.Services
 {
@@ -15,11 +20,14 @@ namespace MilkService.API.Services
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly MilkServiceContext _context;
-        public UserService(IUserRepository userRepository, IUnitOfWork unitOfWork, MilkServiceContext context)
+        private readonly IMapper _mapper;
+
+        public UserService(IUserRepository userRepository, IUnitOfWork unitOfWork, MilkServiceContext context, IMapper mapper)
         {
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
             _context = context;
+            _mapper = mapper;
         }
         public async Task<OResponse> SaveAsync(User user)
         {
@@ -42,6 +50,24 @@ namespace MilkService.API.Services
                 // Will Do some logging stuff here
                 return new FailureResponse($"An error occurred when saving the user record: {ex.Message}");
             }
+        }
+        public async Task<UserLoginResponse> LoginAsync(LoginUserResource loginUserResource)
+        {
+            var user = await _userRepository.LoginAsync(loginUserResource);
+            if (user != null)
+            {
+                var userDetails = _mapper.Map<User, UserLoginDetails>(user);
+                var token =  Guid.NewGuid().ToString();
+                await _userRepository.CreateSession(user.Id, token);
+                await _unitOfWork.CompleteAsync();
+                userDetails.Token = token;
+                return new UserLoginResponse(userDetails);
+            }
+            else
+            {
+                return new UserLoginResponse("Invalid Email or Password");
+            }
+
         }
     }
 }

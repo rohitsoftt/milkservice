@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MilkService.API.Domain.Models.Queries.Response.User;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -25,6 +26,7 @@ namespace MilkService.API.Resources.UserResource
         public string MobileNo { get; set; }
 
         [Required]
+        [EmailAddress]
         [MaxLength(50)]
         public string Email { get; set; }
 
@@ -35,6 +37,11 @@ namespace MilkService.API.Resources.UserResource
         [Required]
         [MaxLength(6)]
         public string PINCode { get; set; }
+
+        [Required]
+        [Range(1, 3, ErrorMessage = "Invalid User Role, Value for {0} must be between {1} and {2}.")]
+        [EnumDataType(typeof(UserRoles))]
+        public string UserRole { get; set; }
 
     }
 }

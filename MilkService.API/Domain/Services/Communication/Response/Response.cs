@@ -26,4 +26,15 @@ namespace MilkService.API.Domain.Services.Communication.Response
             }
         }
     }
+    public class CResponse<T>
+    {
+        public bool Success { get; set; }
+        public T Details { get; set; }
+
+        public CResponse(bool result, T details)
+        {
+            Success = result;
+            Details = details;
+        }
+    }
 }

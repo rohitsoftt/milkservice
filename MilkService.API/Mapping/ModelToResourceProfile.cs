@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using MilkService.API.Domain.Models;
 using MilkService.API.Domain.Models.DBModels.UserModels;
-using MilkService.API.Resources.UserResource;
+using MilkService.API.Domain.Models.Queries.Response.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace MilkService.API.Mapping
 {
-    public class ResourceToModelProfile: Profile
+    public class ModelToResourceProfile : Profile
     {
-        public ResourceToModelProfile()
+        public ModelToResourceProfile()
         {
-            CreateMap<RegisterUserResource, User>();
+            CreateMap<User, UserLoginDetails>();
         }
     }
 }
