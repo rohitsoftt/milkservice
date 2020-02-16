@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MilkService.API.Domain.Models;
+using MilkService.API.Domain.Models.DBModels.UserModels;
 using MilkService.API.Resources.UserResource;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace MilkService.API.Mapping
         public ResourceToModelProfile()
         {
             CreateMap<RegisterUserResource, User>();
+            CreateMap<UpdateProfileResource, User>();
         }
     }
 }

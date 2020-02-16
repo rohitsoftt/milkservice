@@ -1,9 +1,10 @@
-﻿using System;
+﻿using MilkService.API.Domain.Models.Queries.Response.User;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MilkService.API.Domain.Models
+namespace MilkService.API.Domain.Models.DBModels.UserModels
 {
     public class User
     {
@@ -14,7 +15,11 @@ namespace MilkService.API.Domain.Models
         public string Password { get; set; }
         public string MobileNo { get; set; }
         public string Address { get; set; }
-        public string PINCode { get; set; }
+        public string Pincode { get; set; }
+        public string UserRole { get; set; }
+        public DateTime LastUpdated { get; set; }
+
+        public virtual UserSession UserSession { get; set; }
 
     }
 }

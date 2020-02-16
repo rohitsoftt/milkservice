@@ -16,6 +16,7 @@ namespace MilkService.API.Temp
         }
 
         public virtual DbSet<User> User { get; set; }
+        public virtual DbSet<UserSession> UserSession { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -36,60 +37,92 @@ namespace MilkService.API.Temp
                     .HasName("email_UNIQUE")
                     .IsUnique();
 
-                entity.HasIndex(e => e.Mobileno)
+                entity.HasIndex(e => e.MobileNo)
                     .HasName("mobileno_UNIQUE")
                     .IsUnique();
 
-                entity.Property(e => e.Id).HasColumnName("id");
-
                 entity.Property(e => e.Address)
                     .IsRequired()
-                    .HasColumnName("address")
                     .HasColumnType("varchar(400)")
                     .HasCharSet("utf8mb4")
                     .HasCollation("utf8mb4_0900_ai_ci");
 
                 entity.Property(e => e.Email)
                     .IsRequired()
-                    .HasColumnName("email")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8mb4")
                     .HasCollation("utf8mb4_0900_ai_ci");
 
-                entity.Property(e => e.Firstname)
+                entity.Property(e => e.FirstName)
                     .IsRequired()
-                    .HasColumnName("firstname")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8mb4")
                     .HasCollation("utf8mb4_0900_ai_ci");
 
-                entity.Property(e => e.Lastname)
+                entity.Property(e => e.LastName)
                     .IsRequired()
-                    .HasColumnName("lastname")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8mb4")
                     .HasCollation("utf8mb4_0900_ai_ci");
 
-                entity.Property(e => e.Mobileno)
+                entity.Property(e => e.LastUpdated)
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .ValueGeneratedOnAddOrUpdate();
+
+                entity.Property(e => e.MobileNo)
                     .IsRequired()
-                    .HasColumnName("mobileno")
                     .HasColumnType("varchar(13)")
                     .HasCharSet("utf8mb4")
                     .HasCollation("utf8mb4_0900_ai_ci");
 
                 entity.Property(e => e.Password)
                     .IsRequired()
-                    .HasColumnName("password")
                     .HasColumnType("varchar(150)")
                     .HasCharSet("utf8mb4")
                     .HasCollation("utf8mb4_0900_ai_ci");
 
                 entity.Property(e => e.Pincode)
                     .IsRequired()
-                    .HasColumnName("pincode")
+                    .HasColumnName("PINCode")
                     .HasColumnType("varchar(10)")
                     .HasCharSet("utf8mb4")
                     .HasCollation("utf8mb4_0900_ai_ci");
+
+                entity.Property(e => e.UserRole)
+                    .HasColumnType("enum('1','2','3')")
+                    .HasDefaultValueSql("'3'")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+            });
+
+            modelBuilder.Entity<UserSession>(entity =>
+            {
+                entity.ToTable("userSession");
+
+                entity.HasIndex(e => e.Token)
+                    .HasName("Token_UNIQUE")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.UserId)
+                    .HasName("UserId_UNIQUE")
+                    .IsUnique();
+
+                entity.Property(e => e.LastUpdated)
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .ValueGeneratedOnAddOrUpdate();
+
+                entity.Property(e => e.Token)
+                    .IsRequired()
+                    .HasColumnType("varchar(300)")
+                    .HasCharSet("utf8mb4")
+                    .HasCollation("utf8mb4_0900_ai_ci");
+
+                entity.HasOne(d => d.User)
+                    .WithOne(p => p.UserSession)
+                    .HasForeignKey<UserSession>(d => d.UserId)
+                    .HasConstraintName("FK_UserId");
             });
 
             OnModelCreatingPartial(modelBuilder);
