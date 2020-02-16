@@ -74,10 +74,35 @@ namespace MilkService.API.Controllers
         }
         [HttpGet]
         [Route("profile")]
-        [Auth(UserRoles.Customer)]
+        [Auth]
         public IActionResult Profile()
         {
             return Ok(_userDetails);
         }
+
+        [HttpPost]
+        [Route("updateprofile")]
+        [Auth]
+        public async Task<IActionResult> UpdateProfileAsync([FromBody] UpdateProfileResource updateProfileResource)
+        {
+            try
+            {
+                var user = _mapper.Map<UpdateProfileResource, User>(updateProfileResource);
+                user.Id = _userDetails.Id;
+                user.UserRole = _userDetails.UserRole;
+                var result = await _userService.UpdateProfile(user);
+                if (!result.Success)
+                {
+                    return BadRequest(new FailureResponse(result.Message));
+                }
+                var userDeatils = _mapper.Map<User, UserDetails>(result.Resource);
+                return Ok(new CResponse<UserDetails>(result.Success, userDeatils));
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new FailureResponse("Internal Server Error"));
+            }
+        }
+
     }
 }

@@ -18,15 +18,13 @@ namespace MilkService.API.Extensions
 {
     public class AuthAttribute: TypeFilterAttribute
     {
-        public AuthAttribute(UserRoles role = UserRoles.Customer) : base(typeof(ClaimRequirementFilter))
+        public AuthAttribute(UserRoles role=UserRoles.None) : base(typeof(ClaimRequirementFilter))
         {
             Arguments = new object[] { role };
         }
     }
     public class ClaimRequirementFilter : ActionFilterAttribute
     {
-        private readonly MilkServiceContext _context;
-        private readonly IMapper _iMapper;
         private readonly IUserDetails _userDetails;
         private readonly UserRoles _role;
         private readonly IUserRepository _userRepository;
@@ -40,11 +38,18 @@ namespace MilkService.API.Extensions
         {
             if (_userDetails.UserRole != null)
             {
-                UserRoles role = (UserRoles)Int32.Parse(_userDetails.UserRole);
-                if (string.IsNullOrEmpty(_userDetails.UserRole))
-                    actionContext.Result = new BadRequestObjectResult(new FailureResponse("Unauthorized access"));
-                else if (!(_role == role))
-                    actionContext.Result = new UnauthorizedObjectResult(new FailureResponse("You don't have access to this page"));
+
+                if (_role != UserRoles.None)
+                {
+                    UserRoles role = (UserRoles)Int32.Parse(_userDetails.UserRole);
+                    if (!(_role == role))
+                        actionContext.Result = new UnauthorizedObjectResult(new FailureResponse("You don't have access to this page"));
+                    else
+                    {
+                        await _userRepository.ExtendToken(_userDetails.Id);
+                        await next();
+                    }
+                }
                 else
                 {
                     await _userRepository.ExtendToken(_userDetails.Id);

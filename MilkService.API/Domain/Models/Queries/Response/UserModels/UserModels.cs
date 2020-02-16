@@ -8,6 +8,7 @@ namespace MilkService.API.Domain.Models.Queries.Response.User
 {
     public enum UserRoles
     {
+        None = 0,
         [EnumMember(Value = "Admin")]
         Admin = 1,
         [EnumMember(Value = "ServiceProvider")]

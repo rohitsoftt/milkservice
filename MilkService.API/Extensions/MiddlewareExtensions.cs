@@ -49,22 +49,31 @@ namespace MilkService.API.Extensions
             if (httpContext.Request.Headers.TryGetValue("Token", out StringValues stoken))
             {
                 var token = stoken.SingleOrDefault();
-                var user = (from u in context.User
+                var userdetails = (from u in context.User
                             join session in context.UserSession on u.Id equals session.UserId
                             where session.Token.Equals(token)
-                            select u).FirstOrDefault();
+                            select new UserDetails {
+                                Id = u.Id,
+                                FirstName = u.FirstName,
+                                LastName = u.LastName,
+                                Email = u.Email,
+                                MobileNo = u.MobileNo,
+                                Address = u.Address,
+                                UserRole = u.UserRole,
+                                PINCode = u.Pincode,
+                            }).FirstOrDefault();
 
-                if (user != null)
+                if (userdetails != null)
                 {
                     //userDetails = iMapper.Map<User, UserDetails>(user);
-                    userDetails.Id = user.Id;
-                    userDetails.FirstName = user.FirstName;
-                    userDetails.LastName = user.LastName;
-                    userDetails.Email = user.Email;
-                    userDetails.MobileNo = user.MobileNo;
-                    userDetails.Address = user.Address;
-                    userDetails.UserRole = user.UserRole;
-                    userDetails.PINCode = user.Pincode;
+                    userDetails.Id = userdetails.Id;
+                    userDetails.FirstName = userdetails.FirstName;
+                    userDetails.LastName = userdetails.LastName;
+                    userDetails.Email = userdetails.Email;
+                    userDetails.MobileNo = userdetails.MobileNo;
+                    userDetails.Address = userdetails.Address;
+                    userDetails.UserRole = userdetails.UserRole;
+                    userDetails.PINCode = userdetails.PINCode;
                 }
             }
             await _next.Invoke(httpContext);

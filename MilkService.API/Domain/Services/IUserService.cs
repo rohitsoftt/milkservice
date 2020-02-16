@@ -7,12 +7,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MilkService.API.Domain.Models.Queries.Response.User;
 
 namespace MilkService.API.Domain.Services
 {
     public interface IUserService
     {
         Task<OResponse> SaveAsync(User user);
-        Task<UserLoginResponse> LoginAsync(LoginUserResource loginUserResource);
+        Task<ServiceResponse<UserLoginDetails>> LoginAsync(LoginUserResource loginUserResource);
+        Task<ServiceResponse<User>> UpdateProfile(User user);
     }
 }

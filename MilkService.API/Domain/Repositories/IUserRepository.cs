@@ -15,6 +15,7 @@ namespace MilkService.API.Domain.Repositories
         Task<User> LoginAsync(LoginUserResource loginUserResource);
         Task CreateSession(int Id, string token);
         Task ExtendToken(int id);
+        Task UpdateProfile(User user);
         //Task ProfileByToken(string token);
     }
 }

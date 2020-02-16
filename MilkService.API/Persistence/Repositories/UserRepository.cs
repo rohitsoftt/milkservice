@@ -58,6 +58,16 @@ namespace MilkService.API.Persistence.Repositories
             _context.UserSession.Update(userSession);
             await _context.SaveChangesAsync();
         }
+        public async Task UpdateProfile(User user)
+        {
+            var userObj = await _context.User.Where(i => i.Id == user.Id).FirstAsync();
+            userObj.FirstName = user.FirstName;
+            userObj.LastName = user.LastName;
+            userObj.Email = user.Email;
+            userObj.MobileNo = user.MobileNo;
+            userObj.Address = user.Address;
+            userObj.Pincode = user.Pincode;
+        }
         private Exception DublicateEntryException(string v)
         {
             throw new NotImplementedException();

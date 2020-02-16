@@ -51,7 +51,7 @@ namespace MilkService.API.Services
                 return new FailureResponse($"An error occurred when saving the user record: {ex.Message}");
             }
         }
-        public async Task<UserLoginResponse> LoginAsync(LoginUserResource loginUserResource)
+        public async Task<ServiceResponse<UserLoginDetails>> LoginAsync(LoginUserResource loginUserResource)
         {
             var user = await _userRepository.LoginAsync(loginUserResource);
             if (user != null)
@@ -61,13 +61,29 @@ namespace MilkService.API.Services
                 await _userRepository.CreateSession(user.Id, token);
                 await _unitOfWork.CompleteAsync();
                 userDetails.Token = token;
-                return new UserLoginResponse(userDetails);
+                return new ServiceResponse<UserLoginDetails>(userDetails);
             }
             else
             {
-                return new UserLoginResponse("Invalid Email or Password");
+                return new ServiceResponse<UserLoginDetails>("Invalid Email or Password");
             }
 
+        }
+        public async Task<ServiceResponse<User>> UpdateProfile(User user)
+        {
+            try
+            {
+                if (await _context.User.Where(i => (i.Email == user.Email || i.MobileNo == user.MobileNo) && i.Id!=user.Id).CountAsync() > 0)
+                    return new ServiceResponse<User>("Email or Mobile Number already registered!");
+                //await _unitOfWork.CompleteAsync();
+                await _userRepository.UpdateProfile(user);
+                await _unitOfWork.CompleteAsync();
+                return new ServiceResponse<User>(user);
+            }
+            catch(Exception ex)
+            {
+                return new ServiceResponse<User>($"Internal Server Error: {ex.Message}");
+            }
         }
     }
 }
