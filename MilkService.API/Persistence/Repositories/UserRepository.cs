@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace MilkService.API.Persistence.Repositories
 {
@@ -50,7 +51,13 @@ namespace MilkService.API.Persistence.Repositories
                 await _context.UserSession.AddAsync(userSess);
             }
         }
-
+        public async Task ExtendToken(int id)
+        {
+            var userSession = await _context.UserSession.Where(i => i.UserId == id).FirstOrDefaultAsync();
+            userSession.LastUpdated = DateTime.Now;
+            _context.UserSession.Update(userSession);
+            await _context.SaveChangesAsync();
+        }
         private Exception DublicateEntryException(string v)
         {
             throw new NotImplementedException();

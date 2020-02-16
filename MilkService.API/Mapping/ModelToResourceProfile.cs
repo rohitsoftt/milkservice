@@ -13,6 +13,7 @@ namespace MilkService.API.Mapping
         public ModelToResourceProfile()
         {
             CreateMap<User, UserLoginDetails>();
+            CreateMap<User, UserDetails>();
         }
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MilkService.API.Controllers.Config;
+using MilkService.API.Domain.Models.Queries.Response.User;
 using MilkService.API.Domain.Repositories;
 using MilkService.API.Domain.Services;
 using MilkService.API.Extensions;
@@ -44,6 +45,7 @@ namespace MilkService.API
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserDetails, UserDetails>();
             services.AddAutoMapper(typeof(Startup));
             services.AddControllers();
         }
@@ -55,6 +57,7 @@ namespace MilkService.API
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseUserDetailsMiddleware();
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto

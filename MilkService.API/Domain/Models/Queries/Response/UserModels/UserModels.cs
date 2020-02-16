@@ -15,7 +15,18 @@ namespace MilkService.API.Domain.Models.Queries.Response.User
         [EnumMember(Value = "Customer")]
         Customer = 3
     }
-    public class UserDetails
+    public interface IUserDetails
+    {
+        int Id { get; set; }
+        string FirstName { get; set; }
+        string LastName { get; set; }
+        string Email { get; set; }
+        string MobileNo { get; set; }
+        string Address { get; set; }
+        string PINCode { get; set; }
+        string UserRole { get; set; }
+    }
+    public class UserDetails: IUserDetails
     {
         public int Id { get; set; }
         public string FirstName { get; set; }

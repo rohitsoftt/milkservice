@@ -12,6 +12,7 @@ using MilkService.API.Domain.Services.Communication.Response;
 using MilkService.API.Domain.Models.DBModels.UserModels;
 using MilkService.API.Resources;
 using MilkService.API.Resources.UserResource;
+using MilkService.API.Extensions;
 
 namespace MilkService.API.Controllers
 {
@@ -23,11 +24,13 @@ namespace MilkService.API.Controllers
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
+        private readonly IUserDetails _userDetails;
 
-        public UserController(IUserService userService, IMapper mapper)
+        public UserController(IUserService userService, IMapper mapper, IUserDetails userDetails)
         {
             _userService = userService;
             _mapper = mapper;
+            _userDetails = userDetails;
         }
 
         [HttpPost]
@@ -68,6 +71,13 @@ namespace MilkService.API.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new FailureResponse("Internal Server Error"));
             }
+        }
+        [HttpGet]
+        [Route("profile")]
+        [Auth(UserRoles.Customer)]
+        public IActionResult Profile()
+        {
+            return Ok(_userDetails);
         }
     }
 }
