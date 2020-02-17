@@ -48,9 +48,9 @@ namespace MilkService.API.Controllers
 
                 return Ok(result);
             }
-            catch
+            catch(Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new FailureResponse("Internal Server Error"));
+                return StatusCode(StatusCodes.Status500InternalServerError, new FailureResponse($"Internal Server Error:{ex.Message}"));
             }
         }
         [HttpPost]
@@ -69,7 +69,7 @@ namespace MilkService.API.Controllers
             }
             catch(Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new FailureResponse("Internal Server Error"));
+                return StatusCode(StatusCodes.Status500InternalServerError, new FailureResponse($"Internal Server Error: {ex.Message}"));
             }
         }
         [HttpGet]
@@ -98,11 +98,10 @@ namespace MilkService.API.Controllers
                 var userDeatils = _mapper.Map<User, UserDetails>(result.Resource);
                 return Ok(new CResponse<UserDetails>(result.Success, userDeatils));
             }
-            catch
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new FailureResponse("Internal Server Error"));
+                return StatusCode(StatusCodes.Status500InternalServerError, new FailureResponse($"Internal Server Error: {ex.Message}"));
             }
         }
-
     }
 }

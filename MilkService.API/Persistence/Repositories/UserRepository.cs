@@ -68,9 +68,5 @@ namespace MilkService.API.Persistence.Repositories
             userObj.Address = user.Address;
             userObj.Pincode = user.Pincode;
         }
-        private Exception DublicateEntryException(string v)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
