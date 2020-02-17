@@ -33,9 +33,7 @@ namespace MilkService.API.Services
         {
             try
             {
-                /*
-                 * Checking Email or Mobile number is already exist or not in database
-                 * */
+                //Checking Email or Mobile number is already exist or not in database
                 if (await _context.User.Where(i => i.Email == user.Email || i.MobileNo == user.MobileNo).CountAsync() > 0)
                     return new FailureResponse("Email or Mobile Number already registered!");
 
@@ -48,26 +46,32 @@ namespace MilkService.API.Services
             catch (Exception ex)
             {
                 // Will Do some logging stuff here
-                return new FailureResponse($"An error occurred when saving the user record: {ex.Message}");
+                return new FailureResponse($"Internal Service Error: {ex.Message}");
             }
         }
         public async Task<ServiceResponse<UserLoginDetails>> LoginAsync(LoginUserResource loginUserResource)
         {
-            var user = await _userRepository.LoginAsync(loginUserResource);
-            if (user != null)
+            try
             {
-                var userDetails = _mapper.Map<User, UserLoginDetails>(user);
-                var token =  Guid.NewGuid().ToString();
-                await _userRepository.CreateSession(user.Id, token);
-                await _unitOfWork.CompleteAsync();
-                userDetails.Token = token;
-                return new ServiceResponse<UserLoginDetails>(userDetails);
+                var user = await _userRepository.LoginAsync(loginUserResource);
+                if (user != null)
+                {
+                    var userDetails = _mapper.Map<User, UserLoginDetails>(user);
+                    var token = Guid.NewGuid().ToString();
+                    await _userRepository.CreateSession(user.Id, token);
+                    await _unitOfWork.CompleteAsync();
+                    userDetails.Token = token;
+                    return new ServiceResponse<UserLoginDetails>(userDetails);
+                }
+                else
+                {
+                    return new ServiceResponse<UserLoginDetails>("Invalid Email or Password");
+                }
             }
-            else
+            catch(Exception ex)
             {
-                return new ServiceResponse<UserLoginDetails>("Invalid Email or Password");
+                return new ServiceResponse<UserLoginDetails>($"Internal Service Error: {ex.Message}");
             }
-
         }
         public async Task<ServiceResponse<User>> UpdateProfile(User user)
         {
@@ -82,7 +86,7 @@ namespace MilkService.API.Services
             }
             catch(Exception ex)
             {
-                return new ServiceResponse<User>($"Internal Server Error: {ex.Message}");
+                return new ServiceResponse<User>($"Internal Service Error: {ex.Message}");
             }
         }
     }
