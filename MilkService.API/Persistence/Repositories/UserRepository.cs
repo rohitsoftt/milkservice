@@ -68,5 +68,11 @@ namespace MilkService.API.Persistence.Repositories
             userObj.Address = user.Address;
             userObj.Pincode = user.Pincode;
         }
+        public async Task UpdatePassword(int id, string password)
+        {
+            var userObj = await _context.User.Where(i => i.Id == id).FirstAsync();
+            userObj.Password = password;
+        }
+
     }
 }

@@ -17,5 +17,6 @@ namespace MilkService.API.Domain.Repositories
         Task ExtendToken(int id);
         Task UpdateProfile(User user);
         //Task ProfileByToken(string token);
+        Task UpdatePassword(int id, string password);
     }
 }

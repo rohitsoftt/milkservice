@@ -16,5 +16,6 @@ namespace MilkService.API.Domain.Services
         Task<OResponse> SaveAsync(User user);
         Task<ServiceResponse<UserLoginDetails>> LoginAsync(LoginUserResource loginUserResource);
         Task<ServiceResponse<User>> UpdateProfile(User user);
+        Task<OResponse> UpdatePasswordAsync(int id, string password, string oldPassword);
     }
 }

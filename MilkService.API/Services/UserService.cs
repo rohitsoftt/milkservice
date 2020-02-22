@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using MilkService.API.Domain.Models.Queries.Response.User;
+using MilkService.API.Helpers;
 
 namespace MilkService.API.Services
 {
@@ -87,6 +88,28 @@ namespace MilkService.API.Services
             catch(Exception ex)
             {
                 return new ServiceResponse<User>($"Internal Service Error: {ex.Message}");
+            }
+        }
+        public async Task<OResponse> UpdatePasswordAsync(int id, string password, string oldPassword)
+        {
+            try
+            {
+                oldPassword = oldPassword.GetHashed();
+                if(_context.User.Where(i=>i.Id==id && i.Password == oldPassword).Count() > 0)
+                {
+                    password = password.GetHashed();
+                    await _userRepository.UpdatePassword(id, password);
+                    await _unitOfWork.CompleteAsync();
+                    return new SuccessResponse("Password successfully updated");
+                }
+                else
+                {
+                    return new FailureResponse("Old password is invalid");
+                }
+            }
+            catch(Exception ex)
+            {
+                return new FailureResponse($"Failed, could not update password:{ex.Message}");
             }
         }
     }

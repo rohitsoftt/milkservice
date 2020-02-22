@@ -80,7 +80,7 @@ namespace MilkService.API.Controllers
             return Ok(_userDetails);
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("updateprofile")]
         [Auth]
         public async Task<IActionResult> UpdateProfileAsync([FromBody] UpdateProfileResource updateProfileResource)
@@ -99,6 +99,25 @@ namespace MilkService.API.Controllers
                 return Ok(new CResponse<UserDetails>(result.Success, userDeatils));
             }
             catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new FailureResponse($"Internal Server Error: {ex.Message}"));
+            }
+        }
+        [HttpPut]
+        [Route("updatepassword")]
+        [Auth]
+        public async Task<IActionResult> UpdatePasswordAsync([FromBody] UpdatePasswordResource updatePasswordResource)
+        {
+            try
+            {
+                var result = await _userService.UpdatePasswordAsync(
+                    id:_userDetails.Id,
+                    password: updatePasswordResource.Password,
+                    oldPassword: updatePasswordResource.OldPassword);
+                if (!result.Success) return BadRequest(new FailureResponse(result.Messages));
+                else return Ok(new SuccessResponse(result.Messages));
+            }
+            catch(Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new FailureResponse($"Internal Server Error: {ex.Message}"));
             }
