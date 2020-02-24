@@ -15,6 +15,7 @@ namespace MilkService.API.Mapping
         {
             CreateMap<RegisterUserResource, User>();
             CreateMap<UpdateProfileResource, User>();
+            CreateMap<AddCustomerResource, User>();
         }
     }
 }

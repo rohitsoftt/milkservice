@@ -42,7 +42,7 @@ namespace MilkService.API.Extensions
                 if (_role != UserRoles.None)
                 {
                     UserRoles role = (UserRoles)Int32.Parse(_userDetails.UserRole);
-                    if (!(_role == role))
+                    if ((_role != role) && (role != UserRoles.Admin))
                         actionContext.Result = new UnauthorizedObjectResult(new FailureResponse("You don't have access to this page"));
                     else
                     {

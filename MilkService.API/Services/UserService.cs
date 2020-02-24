@@ -112,5 +112,26 @@ namespace MilkService.API.Services
                 return new FailureResponse($"Failed, could not update password:{ex.Message}");
             }
         }
+        public async Task<OResponse> AddCustomerUserAsync(User user)
+        {
+            try
+            {
+                user.Password = "Test@123";
+                //Checking Email or Mobile number is already exist or not in database
+                if (await _context.User.Where(i => i.Email == user.Email || i.MobileNo == user.MobileNo).CountAsync() > 0)
+                    return new FailureResponse("Email or Mobile Number already registered!");
+
+                //If Email or Mobile Number is already not exist the add User details
+                await _userRepository.AddAsync(user);
+                await _unitOfWork.CompleteAsync();
+
+                return new SuccessResponse("User Registration Successful");
+            }
+            catch (Exception ex)
+            {
+                // Will Do some logging stuff here
+                return new FailureResponse($"Internal Service Error: {ex.Message}");
+            }
+        }
     }
 }

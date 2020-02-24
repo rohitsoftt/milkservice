@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MilkService.API.Resources.UserResource
 {
-    public class RegisterUserResource
+    public class AddCustomerResource
     {
         [Required]
         [MaxLength(50)]
@@ -17,9 +17,9 @@ namespace MilkService.API.Resources.UserResource
         [MaxLength(50)]
         public string LastName { get; set; }
 
-        [Required]
-        [MaxLength(50)]
-        public string Password { get; set; }
+        //[Required]
+        //[MaxLength(50)]
+        //public string Password { get; set; }
 
         [Required]
         [MaxLength(13)]
@@ -39,9 +39,8 @@ namespace MilkService.API.Resources.UserResource
         public string PINCode { get; set; }
 
         [Required]
-        [Range(2, 3, ErrorMessage = "Invalid User Role, Value for {0} must be between {1} and {2}.")]
+        [Range(3, 3, ErrorMessage = "Invalid User Role, Value for {0} must be between {1} and {2}.")]
         [EnumDataType(typeof(UserRoles))]
         public string UserRole { get; set; }
-
     }
 }

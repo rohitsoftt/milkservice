@@ -122,5 +122,27 @@ namespace MilkService.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new FailureResponse($"Internal Server Error: {ex.Message}"));
             }
         }
+
+        [HttpPost]
+        [Route("adduser")]
+        [Auth(UserRoles.ServiceProvider)]
+        public async Task<IActionResult> AddCustomerAsync([FromBody] AddCustomerResource addCustomerResource)
+        {
+            try
+            {
+                var user = _mapper.Map<AddCustomerResource, User>(addCustomerResource);
+                var result = await _userService.AddCustomerUserAsync(user);
+                if (!result.Success)
+                {
+                    return BadRequest(result);
+                }
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new FailureResponse($"Internal Server Error:{ex.Message}"));
+            }
+        }
     }
 }

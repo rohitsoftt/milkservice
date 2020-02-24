@@ -20,7 +20,7 @@ namespace MilkService.API.Resources.UserResource
         public string Password { get; set; }
 
         [Required]
-        [Range(1, 3, ErrorMessage = "Invalid User Role, Value for {0} must be between {1} and {2}.")]
+        [Range(2, 2, ErrorMessage = "Invalid User Role, Value for {0} must be between {1} and {2}.")]
         public string UserRole { get; set; }
     }
 }
