@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using MilkService.API.Domain.Models.DBModels.UserModels;
+using MilkService.API.Domain.Models.Queries;
 using MilkService.API.Domain.Models.Queries.Response.User;
+using MilkService.API.Resources.UserResource;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +16,7 @@ namespace MilkService.API.Mapping
         {
             CreateMap<User, UserLoginDetails>();
             CreateMap<User, UserDetails>();
+            CreateMap<QueryResult<User>, QueryResultResource<UserDetails>>();
         }
     }
 }

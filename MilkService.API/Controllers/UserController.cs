@@ -13,6 +13,8 @@ using MilkService.API.Domain.Models.DBModels.UserModels;
 using MilkService.API.Resources;
 using MilkService.API.Resources.UserResource;
 using MilkService.API.Extensions;
+using MilkService.API.Domain.Models.Queries.UserQueries;
+using MilkService.API.Domain.Models.Queries;
 
 namespace MilkService.API.Controllers
 {
@@ -143,6 +145,17 @@ namespace MilkService.API.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new FailureResponse($"Internal Server Error:{ex.Message}"));
             }
+        }
+
+        [HttpGet]
+        [Route("getuserlist")]
+        [Auth(UserRoles.ServiceProvider)]
+        public async Task<QueryResultResource<UserDetails>> GetCustomerListAsync([FromQuery]CustomerUserQueryResource query)
+        {
+            var productsQuery = _mapper.Map<CustomerUserQueryResource, CustomerUserQuery>(query);
+            var queryResult = await _userService.CustomerListAsync(productsQuery);
+            var queryResponse = _mapper.Map<QueryResult<User>, QueryResultResource<UserDetails>>(queryResult);
+            return queryResponse;
         }
     }
 }

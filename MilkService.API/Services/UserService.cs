@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MilkService.API.Domain.Models.Queries.Response.User;
 using MilkService.API.Helpers;
+using MilkService.API.Domain.Models.Queries.UserQueries;
+using MilkService.API.Domain.Models.Queries;
 
 namespace MilkService.API.Services
 {
@@ -132,6 +134,11 @@ namespace MilkService.API.Services
                 // Will Do some logging stuff here
                 return new FailureResponse($"Internal Service Error: {ex.Message}");
             }
+        }
+        public async Task<QueryResult<User>> CustomerListAsync(CustomerUserQuery customerUserQuery)
+        {
+            var user = _userRepository.CustomerListAsync(customerUserQuery);
+            return await user;
         }
     }
 }

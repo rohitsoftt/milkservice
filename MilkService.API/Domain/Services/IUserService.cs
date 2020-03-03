@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MilkService.API.Domain.Models.Queries.Response.User;
+using MilkService.API.Domain.Models.Queries.UserQueries;
+using MilkService.API.Domain.Models.Queries;
 
 namespace MilkService.API.Domain.Services
 {
@@ -18,5 +20,6 @@ namespace MilkService.API.Domain.Services
         Task<ServiceResponse<User>> UpdateProfile(User user);
         Task<OResponse> UpdatePasswordAsync(int id, string password, string oldPassword);
         Task<OResponse> AddCustomerUserAsync(User user);
+        Task<QueryResult<User>> CustomerListAsync(CustomerUserQuery customerUserQuery);
     }
 }

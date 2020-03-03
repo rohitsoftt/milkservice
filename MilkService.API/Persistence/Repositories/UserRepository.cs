@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Globalization;
+using MilkService.API.Domain.Models.Queries.UserQueries;
+using MilkService.API.Domain.Models.Queries;
 
 namespace MilkService.API.Persistence.Repositories
 {
@@ -72,6 +74,36 @@ namespace MilkService.API.Persistence.Repositories
         {
             var userObj = await _context.User.Where(i => i.Id == id).FirstAsync();
             userObj.Password = password;
+        }
+
+        public async Task<QueryResult<User>> CustomerListAsync(CustomerUserQuery customerUserQuery)
+        {
+            IQueryable<User> queryable = _context.User
+                                                    .AsNoTracking();
+
+            // AsNoTracking tells EF Core it doesn't need to track changes on listed entities. Disabling entity
+            // tracking makes the code a little faster
+            if (customerUserQuery.UserId.HasValue && customerUserQuery.UserId > 0)
+            {
+                queryable = queryable.Where(p => p.Id == customerUserQuery.UserId);
+            }
+            int i = (int)UserRoles.Customer;
+            queryable = queryable.Where(p => p.UserRole == i.ToString());
+            // Here I count all items present in the database for the given query, to return as part of the pagination data.
+            int totalItems = await queryable.CountAsync();
+
+            // Here I apply a simple calculation to skip a given number of items, according to the current page and amount of items per page,
+            // and them I return only the amount of desired items. The methods "Skip" and "Take" do the trick here.
+            List<User> users = await queryable.Skip((customerUserQuery.Page - 1) * customerUserQuery.ItemsPerPage)
+                                                    .Take(customerUserQuery.ItemsPerPage)
+                                                    .ToListAsync();
+
+            // Finally I return a query result, containing all items and the amount of items in the database (necessary for client-side calculations ).
+            return new QueryResult<User>
+            {
+                Items = users,
+                TotalItems = totalItems,
+            };
         }
 
     }
